@@ -1,0 +1,184 @@
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+ <div class="page-wrapper">
+      <div class="login-page">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-12 col-lg-10 col-xl-8 offset-xl-2 offset-lg-2">
+              <div class="login-box">
+                <div class="row no-gutters row-eq-height">
+                  <div class="col-md-5 col-xl-5">
+                    <div class="login-content-box">
+                      <div class="login-text">
+                        <h3>Welcome</h3>
+                        <h2>to website</h2>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+                          labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+                          laboris nisi ut aliquip ex ea commodo consequat.</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-7 col-xl-7">
+                    <div class="login-form-box">
+                      <div class="right-heading">
+                        <h2>Join Us</h2>
+                      </div>
+                      <%= form_for(resource, as: resource_name, url: registration_path(resource_name),:html => {:id => "registration_form"}) do |f| %>
+                      <%#= render "devise/shared/error_messages", resource: resource %>
+                        <div class="form-group">
+                          <br>
+                          <!-- <input type="text" class="form-control" id="" placeholder="Username"> -->
+                           <%= f.text_field :name, autofocus: true, class: "form-control", id: "user_name", placeholder: "Username" %>
+                           <span class="msg-error1 error"></span>
+                        </div>
+                        <div class="form-group">
+                          <!-- <input type="email" class="form-control" id="" placeholder="Email Address"> -->
+                          <%= f.email_field :email, autocomplete: "email", class: "form-control", id: "user_email", placeholder: "Email Address" %>
+                          <span class="msg-error2 error"></span>
+                        </div>
+                        <div class="form-group">
+                          <!-- <input type="Password" class="form-control" id="" placeholder="Password"> -->
+                         <%= f.password_field :password, autocomplete: "new-password", class: "form-control", id: "user_pass", placeholder: "Password" %>
+                           <span class="msg-error3 error"></span>
+
+                        </div>
+                        <div class="form-group">
+                          <!-- <input type="Password" class="form-control" id="" placeholder="Confirm Password"> -->
+                          <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "form-control",id: "user_conf_pass", placeholder: "Confirm Password" %>
+                          <span class="msg-error4 error"></span>
+
+                        </div>
+                   <!--      <div class="form-group">
+                          <div class="captcha">
+                            <center><%#= recaptcha_tags id:"g-recaptcha-response" %></center>
+                          <span class="msg-error5 error"></span>
+                          </div>
+                        </div> -->
+                        <div class="form-group">
+                          <p class="mb-0">On Clicking Register, you indicate that you have read and understand our
+                            <a class="yellow-text" href="/homes/privacy_policy">Privacy Policy</a> & <a class="yellow-text" href="/homes/term_condition">Terms of
+                              Use</a> and represent that you are at least 13 year of age.</p>
+                        </div>
+                        <div class="form-group text-center mb-0">
+                           <%= f.submit "REGISTER", class: "btn btn-block btn-theme" %>
+                          <!-- <a href="#" class="btn btn-success">Register</a> -->
+                        </div>
+ 
+                        <p class="text-center mt20"> Already a member? <a class="yellow-text"><%=link_to "Login", new_session_path(resource_name)%></a></p>
+                      <%end%>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+<script type="text/javascript">
+$("form").submit(function(event) {
+  var name = $("#user_name").val();
+  var email = $("#user_email").val();
+  var password = $("#user_pass").val();
+  var conf_pass = $("#user_conf_pass").val();
+   var recaptcha = $("#g-recaptcha-response").val();
+   //alert(recaptcha);
+    if (name === "") {
+     // alert('name');
+     event.preventDefault();
+       $( '.msg-error1').text("User Name Is Required* ");
+   }
+    if (email === "") {
+      event.preventDefault();
+       $( '.msg-error2').text( "Email Id Is Required* ");
+   }
+    if (password === "") {
+      event.preventDefault();
+       $( '.msg-error3').text( "Password Is Required* ");
+   } 
+   if (conf_pass === "") {
+      event.preventDefault();
+       $( '.msg-error4').text( "Confirm Password Is Required* ");
+   }
+   if (recaptcha === "") {
+      event.preventDefault();
+       $( '.msg-error5').text("Recaptcha Is Required* ");
+   }
+});
+$("#user_name").change(function(event) {
+    $( '.msg-error1').text( "" );
+  });
+$("#user_email").change(function(event) {
+    $( '.msg-error2').text( "" );
+  });
+  $("#user_pass").change(function(event) {
+    $( '.msg-error3').text( "" );
+  });
+$("#user_conf_pass").change(function(event) {
+    $( '.msg-error4').text( "" );
+  });
+$("#g-recaptcha-response").change(function(event) {
+    $( '.msg-error5').text( "" );
+  });
+
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){
+$("#registration_form").validate({
+    rules: {
+      "user[name]":{
+        //required: true,
+        user_nospace_regex: true,
+        userRegex: true,
+        minlength: 2,
+        maxlength: 28
+      },
+      "user[email]":{
+       required: true,
+       remote: "/web/users/check_email"
+      },
+      "user[password]":{
+       // required: true,
+        minlength: 8,
+        maxlength: 16
+      },
+      "user[password_confirmation]":{
+        //required: true,
+        equalTo: "#user_pass",
+        minlength: 8,
+        maxlength: 16
+      }
+    }, 
+    messages: { 
+            "user[email]": {
+              remote: "Email has already been taken."
+            },
+            "user[password_confirmation]": {
+              equalTo: "Confirm password didn't match."
+            }
+        },
+    
+    submitHandler: function(form) {
+        form.submit();
+      }
+  });
+  });
+
+  $.validator.addMethod("userRegex", function(value, element) {
+    return this.optional(element) || /^(?=[^@]*[A-Za-z])([a-zA-Z -])+$/i.test(value);
+  }, "Please enter a valid characters, accepts only alphabets.");
+
+  $.validator.addMethod("user_nospace_regex", function(value, element) {
+    return this.optional(element) || /^[^-\s][a-zA-Z0-9_\s-]+$/i.test(value);
+  }, "No space Required.");
+</script>
+
+<style type="text/css">
+  .msg-error{
+        color: #e80b0b;
+  }
+  .error{
+            color: #e80b0b;
+  }
+</style>
+
